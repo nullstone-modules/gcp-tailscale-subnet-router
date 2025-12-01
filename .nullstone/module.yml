@@ -1,0 +1,14 @@
+org_name: nullstone
+name: gcp-tailscale-subnet-router
+friendly_name: Tailscale Subnet Router
+description: Creates a tailscale subnet router to access private resources on a GCP network
+category: app
+subcategory: server
+provider_types:
+    - gcp
+platform: tailscale
+subplatform: ""
+type: ""
+appCategories: []
+is_public: true
+tool_name: terraform
