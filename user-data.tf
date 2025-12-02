@@ -1,5 +1,6 @@
 locals {
-  advertise_tags = join(",", [for t in var.tags : "tag:${t}"])
+  advertise_tags   = join(",", [for t in var.tags : "tag:${t}"])
+  advertise_routes = join(",", concat(local.private_cidrs, local.public_cidrs))
 
   cloud_init = <<EOF
 #!/bin/bash
@@ -18,7 +19,7 @@ sysctl -p /etc/sysctl.d/99-tailscale.conf
 
 # Bring up Tailscale with subnet routing + tags + auth key
 tailscale up \
-  --advertise-routes=${local.vpc_cidr} \
+  --advertise-routes=${local.advertise_routes} \
   --advertise-tags=${local.advertise_tags} \
   --auth-key=${var.auth_key}
 

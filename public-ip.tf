@@ -7,5 +7,5 @@ resource "google_compute_address" "this" {
 }
 
 locals {
-  public_ip = var.enable_ssh_access ? google_compute_address.this.address : ""
+  public_ip = var.enable_ssh_access ? google_compute_address.this[0].address : ""
 }
