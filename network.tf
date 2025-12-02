@@ -4,8 +4,9 @@ data "ns_connection" "network" {
 }
 
 locals {
-  vpc_name            = data.ns_connection.network.outputs.vpc_name
-  private_cidrs       = data.ns_connection.network.outputs.private_cidrs
-  public_cidrs        = data.ns_connection.network.outputs.public_cidrs
-  public_subnet_names = data.ns_connection.network.outputs.public_subnet_names
+  vpc_name              = data.ns_connection.network.outputs.vpc_name
+  private_cidrs         = data.ns_connection.network.outputs.private_cidrs
+  private_service_cidrs = data.ns_connection.network.outputs.private_service_cidrs
+  public_cidrs          = data.ns_connection.network.outputs.public_cidrs
+  public_subnet_names   = data.ns_connection.network.outputs.public_subnet_names
 }

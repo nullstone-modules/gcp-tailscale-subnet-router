@@ -1,6 +1,6 @@
 locals {
   advertise_tags   = join(",", [for t in var.tags : "tag:${t}"])
-  advertise_routes = join(",", concat(local.private_cidrs, local.public_cidrs))
+  advertise_routes = join(",", concat(local.private_cidrs, local.public_cidrs, local.private_service_cidrs))
 
   cloud_init = <<EOF
 #!/bin/bash
