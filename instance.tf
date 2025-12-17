@@ -33,6 +33,7 @@ resource "google_compute_instance" "this" {
   metadata_startup_script = local.cloud_init
 
   metadata = {
-    ssh-keys = local.ssh_keys
+    enable-oslogin = local.ssh_keys == "" ? "TRUE" : null
+    ssh-keys       = local.ssh_keys
   }
 }
