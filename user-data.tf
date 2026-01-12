@@ -1,9 +1,42 @@
 locals {
+  # Configure dnsmasq to forward private GCP zones to Tailnet if local.internal_domain_fqdn is not empty
+
+  dnsmasq_tailscale_split_config = <<EOF
+# Only listen on Tailscale
+interface=tailscale0
+bind-interfaces
+
+# do NOT listen on loopback at all
+except-interface=lo
+
+# Forward Cloud DNS private zone
+server=/${trimsuffix(local.internal_domain_fqdn, ".")}/169.254.169.254
+
+cache-size=1000
+EOF
+
+  dnsmasq_init = local.internal_domain_fqdn == "" ? "" : <<EOF
+# Install and start dnsmasq
+sudo apt-get install -yq dnsmasq
+
+# Add dnsmasq configuration to provide split DNS to private GCP zones
+sudo tee /etc/dnsmasq.d/tailscale-split.conf >/dev/null <<-EOT
+${local.dnsmasq_tailscale_split_config}
+EOT
+
+# Restart dnsmasq to apply changes
+sudo systemctl restart dnsmasq
+sudo systemctl enable dnsmasq
+
+EOF
+}
+
+locals {
   advertise_tags   = join(",", [for t in var.tags : "tag:${t}"])
   advertise_routes = join(",", concat(local.private_cidrs, local.public_cidrs, local.private_service_cidrs))
 
   cloud_init = <<EOF
-#!/bin/bash
+#!/usr/env/bin bash
 set -euo pipefail
 
 # Install Tailscale (Ubuntu/Debian)
@@ -23,5 +56,6 @@ tailscale up \
   --advertise-tags=${local.advertise_tags} \
   --auth-key=${var.auth_key}
 
+${local.dnsmasq_init}
 EOF
 }
