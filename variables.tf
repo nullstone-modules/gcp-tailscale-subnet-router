@@ -37,6 +37,24 @@ If this subnet router is recreated, a new auth key is necessary to register with
 EOF
 }
 
+variable "resource_alerts" {
+  type = object({
+    enabled = bool
+    email   = string
+    cpu     = number
+  })
+  default = {
+    enabled = false
+    email   = ""
+    cpu     = 90
+  }
+  description = <<EOF
+Configure CPU utilization alerting for the subnet router instance.
+When enabled, a GCP monitoring alert policy is created that notifies the given email address
+when CPU utilization exceeds the configured threshold (0-100).
+EOF
+}
+
 variable "tags" {
   type    = list(string)
   default = []
