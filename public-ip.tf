@@ -1,11 +1,13 @@
+// Normally, we would only create a public ip for the instance if SSH was enabled
+// However, the subnet router doesn't establish a connection to Tailscale without it
+// As a result, we're going to always create this public ip
+// Ideally, it wouldn't have a public ip, but as long as there isn't a firewall rule allowing it, we're safe enough
 resource "google_compute_address" "this" {
   name   = local.resource_name
   region = local.region
   labels = local.labels
-
-  count = var.enable_ssh_access ? 1 : 0
 }
 
 locals {
-  public_ip = var.enable_ssh_access ? google_compute_address.this[0].address : ""
+  public_ip = var.enable_ssh_access ? google_compute_address.this.address : ""
 }

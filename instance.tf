@@ -21,12 +21,8 @@ resource "google_compute_instance" "this" {
     network    = local.vpc_name
     subnetwork = local.public_subnet_names[0]
 
-    dynamic "access_config" {
-      for_each = var.enable_ssh_access ? [1] : []
-
-      content {
-        nat_ip = local.public_ip
-      }
+    access_config {
+      nat_ip = local.public_ip
     }
   }
 
