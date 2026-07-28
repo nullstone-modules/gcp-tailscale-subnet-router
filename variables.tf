@@ -12,9 +12,12 @@ EOF
 
 variable "admin_ssh_public_keys" {
   type        = map(string)
+  default     = {}
   description = <<EOF
 A map of SSH public keys to add to the subnet router's authorized_keys file.
 This allows an admin to access the subnet router over SSH.
+
+If empty, OS Login is enabled instead and SSH access is managed through GCP IAM.
 EOF
 }
 
